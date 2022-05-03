@@ -1,0 +1,14 @@
+#root {
+    margin: 0 auto;
+    height: 100%;
+    
+}
+.bio {
+    background: #000;
+    color: white;
+}
+.chart, .bio {
+    padding: 10px;
+}
+.search-user input {
+}

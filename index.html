@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./static/css/style.css">
+    <title>GraphQl</title>
+</head>
+
+<body>
+    <div id="root">
+
+        <div class="bio" id="bio"> </div>
+
+        <div class="chart">
+            <div class="search-user">
+                <input type="text" id="username" value="devstackq">
+                <input type="submit" id="chartProgressId" value="send">
+            </div>
+
+            <chart>
+                <canvas le width="1400px" height="700px"></canvas>
+                <draw-canvas-data-set
+                    style='width: fit-content; height: fit-content; padding: 5px 15px; margin: 5px; position: absolute; left: 618px; top: 160px; opacity: 0; transition: all 0.5s ease 0s; color: rgb(255, 255, 255); background: rgb(3, 169, 244);'>
+                </draw-canvas-data-set>
+            </chart>
+
+        </div>
+    </div>
+    <script src="./static/js/main.js">    </script>
+
+</body>
+
+</html>
