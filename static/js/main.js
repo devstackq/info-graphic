@@ -1,4 +1,3 @@
-
 const queryGetUserID = `
 query ($login: String) {
   user(where: { login: { _eq: $login } }) {
@@ -84,9 +83,6 @@ let progressChart = {
   total: 0
 }
 
-// todo: , second Graphic
-//own backaend - simple auth - return TOken - > show all info User
-//try svg render
 
 let progressResponse = null;
 let amountResponse = null;
@@ -126,17 +122,14 @@ const setUserID = async () => {
       user.id = resp.data.user[0].id
       user.username = username
     } else {
-      console.log(resp, 'incorrect username')
-      // alert('incorrect username')
-      return
+      throw new Error("Not found user!");
     }
   } else {
-    alert('empty field')
-    return
+    throw new Error("Empty field!");
   }
 }
 
-const setDefaultValues = () => {
+const setDefaultValues = async () => {
   progressChart.dates = []
   progressChart.amounts = []
   progressChart.posXYAndTaskName = []
@@ -147,7 +140,6 @@ const setDefaultValues = () => {
 }
 
 const getProgresses = async () => {
-
 
   while (progressChart.offsetIsDone) {
     progressResponse = await graphQLFetch(queryProgressesByUserId, { userId: user.id, offset: progressChart.offset })
@@ -192,24 +184,32 @@ const getTransactionByObjID = async () => {
 }
 
 
-document.getElementById('chartProgressId').onclick = async () => {
 
-  setDefaultValues()
-  await setUserID()
+const init = async () => {
+
+  await setDefaultValues()
+
+  try {
+    await setUserID()
+  } catch (err) {
+    alert(err)
+    return
+  }
+
   await getProgresses()
   await getTransactionByObjID()
 
   let level = getLevelFromXp(progressChart.total)
-
   if (level > 0) {
     document.getElementById('bio').textContent = ` Level: ` + level + ` UserName: ` + user.username + ` Total Xp: ` + progressChart.total
   }
-
   render()
-
 }
 
-
+document.getElementById('chartProgressId').onclick = () => {
+  // throttled(500, init())
+  init()
+}
 
 const render = () => {
   h = c.height
@@ -239,7 +239,6 @@ function draw() {
   let line = 30
   start = 30
 
-  // un = Math.round((Math.max(...progressChart.amounts) - Math.min(...progressChart.amounts)) / 10)
 
   for (let data of progressChart.amounts) {
     let max = Math.max(...progressChart.amounts),
@@ -365,14 +364,14 @@ c.onmousemove = function (e) {
         ly = e.layerY,
         dx = dataG[1],
         dy = dataG[0]
-        // console.log(ly, dy, range(dy, Math.floor(dy)), 3, dx, lx)
-      if (range(dx , Math.floor(dx) + 20).includes(lx) && range(dy - 10, Math.floor(dy) + 80).includes(ly)) {
+      // console.log(ly, dy, range(dy, Math.floor(dy)), 3, dx, lx)
+      if (range(dx, Math.floor(dx) + 20).includes(lx) && range(dy - 10, Math.floor(dy) + 80).includes(ly)) {
         // console.log(ly, dy, range(dy, Math.floor(dy)), 6023, dx, lx)
         $('draw-canvas-data-set').innerHTML = dataG[2]
         $('draw-canvas-data-set').style.opacity = "1"
         $('draw-canvas-data-set').style.left = e.clientX + "px"
         $('draw-canvas-data-set').style.top = e.clientY + "px"
-      } if (range(dx , Math.floor(dx) + 20).includes(lx) && !range(dy - 10, Math.floor(dy) + 80).includes(ly)) {
+      } if (range(dx, Math.floor(dx) + 20).includes(lx) && !range(dy - 10, Math.floor(dy) + 80).includes(ly)) {
         $('draw-canvas-data-set').style.opacity = "0"
       }
       lx = lx - 1
